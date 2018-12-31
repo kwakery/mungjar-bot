@@ -79,7 +79,7 @@ async def checkTasks():
                 # Create Channel
                 newChannel = await guild.create_text_channel('commission-' + commission['token'], overwrites=overwrites, category=category)
                 await newChannel.send("Hello "+member.mention+". Please continue discussion about your commission here.\n"
-                                    + "Here are is the summary about your commission:\n"
+                                    + "Here is the summary about your commission:\n"
                                     + "**Name:** " + commission['name'] + '\n'
                                     + "**Email:** " + commission['email'] + '\n'
                                     + "**Date needed by:** " + commission['duedate'] + '\n'
@@ -100,9 +100,16 @@ async def checkTasks():
         await asyncio.sleep(20)
 
 
-@client.command(name='ping')
-async def ping(ctx):
-    await ctx.send('pong')
+@client.command(name='status')
+async def ping(ctx, token, status):
+    async with aiohttp.ClientSession() as session:
+        url = settings.API['baseUrl'] + '/commissions/' + token
+        data = aiohttp.FormData()
+        data.add_field('status', status)
+
+        response = await session.patch(url, headers=headers, data=data)
+
+    await ctx.send('Done!')
 
 
 client.run(settings.discord['token'])
