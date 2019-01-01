@@ -101,7 +101,7 @@ async def checkTasks():
 
 
 @client.command(name='status')
-async def ping(ctx, token, status):
+async def setStatus(ctx, token, status):
     async with aiohttp.ClientSession() as session:
         url = settings.API['baseUrl'] + '/commissions/' + token
         data = aiohttp.FormData()
@@ -111,5 +111,28 @@ async def ping(ctx, token, status):
 
     await ctx.send('Done!')
 
+@client.command(name='open')
+async def setOpened(ctx):
+    async with aiohttp.ClientSession() as session:
+        url = settings.API['baseUrl'] + '/settings'
+        data = aiohttp.FormData()
+        data.add_field('key', "COMMISSIONS_OPEN")
+        data.add_field('value', 'true')
+
+        response = await session.patch(url, headers=headers, data=data)
+
+    await ctx.send('Done!')
+
+@client.command(name='close')
+async def setClosed(ctx, value):
+    async with aiohttp.ClientSession() as session:
+        url = settings.API['baseUrl'] + '/settings'
+        data = aiohttp.FormData()
+        data.add_field('key', "COMMISSIONS_OPEN")
+        data.add_field('value', 'false')
+
+        response = await session.patch(url, headers=headers, data=data)
+
+    await ctx.send('Done!')
 
 client.run(settings.discord['token'])
