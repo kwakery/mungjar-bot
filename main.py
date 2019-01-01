@@ -124,7 +124,7 @@ async def setOpened(ctx):
     await ctx.send('Done!')
 
 @client.command(name='close')
-async def setClosed(ctx, value):
+async def setClosed(ctx):
     async with aiohttp.ClientSession() as session:
         url = settings.API['baseUrl'] + '/settings'
         data = aiohttp.FormData()
